@@ -1,4 +1,4 @@
-[BlockSearch-README.md（GitHub_用）.md](https://github.com/user-attachments/files/33195483/BlockSearch-README.md.GitHub_.md)
+[BlockSearch-README.md.md](https://github.com/user-attachments/files/33195483/BlockSearch-README.md.GitHub_.md)
 # BlockSearch
 
 **BlockSearch** is a client-side Fabric mod that highlights blocks, entities and world structures around you — no permissions required. Find ores, mobs, villages and fortresses instantly in survival.
