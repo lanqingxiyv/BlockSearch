@@ -98,22 +98,8 @@ BlockSearch 是一个纯客户端 Fabric 模组，不需要任何权限即可高
 
 支持 16 种内置色名和 #RRGGBB 十六进制：
 
-- black
-- dark_blue
-- dark_green
-- dark_aqua
-- dark_red
-- dark_purple
-- gold
-- gray
-- dark_gray
-- blue
-- green
-- aqua
-- red
-- light_purple
-- yellow
-- white
+black / dark_blue / dark_green / dark_aqua / dark_red / dark_purple / gold / gray
+dark_gray / blue / green / aqua / red / light_purple / yellow / white
 
 ```
 /hunt color block #ff8800
