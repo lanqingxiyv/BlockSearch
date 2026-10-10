@@ -1,135 +1,177 @@
-[BlockSearch-README.md](https://github.com/user-attachments/files/33196292/BlockSearch-README.md)
+[GitHub_README.md](https://github.com/user-attachments/files/33282359/GitHub_README.md)
 # BlockSearch
 
-**BlockSearch** is a client-side Fabric mod that highlights blocks, entities and world structures around you — no permissions required. Find ores, mobs, villages and fortresses instantly in survival.
+一个 Minecraft **Fabric 客户端**模组，通过 `/hunt` 指令在游戏中高亮标记方块、生物、结构以及袭击敌人，支持颜色、范围、数量上限与持续追踪（keep）等自定义。
 
-BlockSearch 是一个纯客户端 Fabric 模组，不需要任何权限即可高亮周围的指定方块、生物和世界结构，帮你快速找矿物、找生物、找村庄和要塞。
-
-- Minecraft **26.2 (Fabric)** · requires [Fabric API](https://modrinth.com/mod/fabric-api)
-- Author / 作者：`_lan_qing_` 与 AI 共同完成 / with AI
-- Download / 下载：请替换为你的 Modrinth 与 CurseForge 发布页链接
-
----
-
-## Features 功能
-
-- 方块搜索：高亮范围内所有指定方块（默认浅绿色框线）
-- 生物发光：让指定生物发光高亮，支持持续监测
-- 结构定位：半透明高亮整个世界结构，效果同 MiniHUD
-- 自定义颜色：16 种内置色名 + #RRGGBB 十六进制
-- 持续监测（keep）：自动刷新，新出现的方块/生物自动高亮
-- 位置播报（broadcast）：keep 模式下可选播报位置
-- 一键清除：/hunt clear 清除所有高亮和监测进程
-- 多人可用：结构定位支持装有 Servux 的服务器
+- **作者**：_lan_qing_（与 AI 共同完成）
+- **适用版本**：Minecraft 26.2（Fabric）
+- **模组 ID**：blocksearch
+- **当前版本**：1.6.15-26.2
+- **加载方式**：仅客户端（无需服务端安装，可进服务器游玩）
 
 ---
 
-## Installation 安装
+## ✨ 功能一览
 
-1. 安装 [Fabric Loader](https://fabricmc.net/use/) 和 [Fabric API](https://modrinth.com/mod/fabric-api)（对应 MC 26.2）
-2. 下载本模组 jar（英文版或中文翻译版）
-3. 放入 `.minecraft/mods` 文件夹
-4. 启动游戏
-
-> 纯客户端模组，不需要装在服务端。结构定位在多人服务器需要服主安装 [Servux](https://modrinth.com/mod/servux)（仅服务端）。
-
----
-
-## Commands 指令
-
-所有指令以 `/hunt` 开头，方块/生物/结构 id 均支持 Tab 自动补全。
-
-| 分类 | 指令 | 作用 |
-|---|---|---|
-| 方块 | `/hunt block <id>` | 高亮指定方块 |
-| 方块 | `/hunt block <id1> <id2>` | 同时高亮两种方块（可分别配色） |
-| 方块 | `/hunt hand` | 高亮手持方块 |
-| 方块 | `/hunt crosshair` | 高亮准星方块 |
-| 生物 | `/hunt glow` | 开关全部生物发光 |
-| 生物 | `/hunt glow <生物id>` | 目标生物发光 |
-| 结构 | `/hunt structure <结构id>` | 结构半透明高亮 |
-| 颜色 | `/hunt color block <颜色>` | 设置方块高亮颜色 |
-| 颜色 | `/hunt color glow <颜色>` | 设置生物发光颜色 |
-| 清除 | `/hunt clear` | 清除全部高亮与自动监测 |
-
-### Block Search 方块搜索
+### 方块高亮
+- 按方块 ID、手持物品、准星所指三种方式寻找
+- 支持同时高亮两种方块（可分别指定颜色）
+- 支持自定义颜色、搜索半径（区块）、高亮数量上限
+- `keep` 持续追踪（新出现的方块也会继续高亮）
 
 ```
-/hunt block minecraft:diamond_ore
-/hunt block minecraft:diamond_ore minecraft:emerald_ore
-/hunt block minecraft:ancient_debris 16 4096
-/hunt hand
-/hunt crosshair
+/hunt block <方块ID> [半径] [上限] | [颜色]
+/hunt block <方块ID1> <方块ID2> [颜色1 颜色2]
+/hunt hand [半径] [上限] | [颜色]          （手持的方块）
+/hunt crosshair [半径] [上限] | [颜色]      （准星所指的方块）
+# 以上均可加 keep / notkeep，如：
+/hunt block minecraft:diamond_ore keep
 ```
 
-可选后缀：keep（每 2 秒自动刷新）、notkeep（关闭监测）、半径和上限（区块数与数量上限，默认渲染距离 / 4096）、颜色（自定义本次高亮颜色）。
-
-高亮的方块被破坏或离开区域后，框线自动消失。
-
-### Entity Glow 生物发光
-
-```
-/hunt glow
-/hunt glow zombie
-/hunt glow creeper and skeleton red blue
-/hunt glow blaze keep broadcast
-```
-
-可选后缀：keep、notkeep、broadcast / notbroadcast、半径和上限、颜色。keep 开启后，范围内一旦生成目标生物会自动高亮并播报位置。
-
-鸡骑士（Chicken Jockey）：输入 `chicken_jockey` 会同时高亮鸡和骑在身上的小僵尸；keep 开启后附近生成鸡骑士会自动高亮并播报位置。
-
-### Structures 结构定位
+### 生物高亮
+- 按生物 ID 寻找，支持同时高亮多种生物（可分别指定颜色）
+- `keep` 跨波持续追踪，`broadcast` 每 10 秒播报剩余生物与坐标
+- **鸡骑士**：可单独高亮鸡骑士及其身上的小僵尸，自动播报位置
 
 ```
-/hunt structure minecraft:village_plains
-/hunt structure minecraft:fortress
-/hunt structure minecraft:ancient_city
-/hunt structure minecraft:stronghold 16 64 keep
+/hunt glow all [半径] [上限]
+/hunt glow <生物ID> [半径] [上限] [颜色] [keep|notkeep] [broadcast|notbroadcast]
+/hunt glow <生物ID1> and <生物ID2> [颜色1 颜色2] [keep|notkeep] [broadcast|notbroadcast]
+/hunt glow chicken_jockey [keep|notkeep] [broadcast|notbroadcast]
 ```
 
-可选后缀：keep / notkeep、broadcast / notbroadcast、半径和上限。
-
-单机直接可用；多人服务器需要服主安装 Servux mod，本模组会自动对接其结构数据通道。未安装时会提示结构显示不可用。
-
----
-
-## Colors 颜色
-
-支持 16 种内置色名和 #RRGGBB 十六进制：
-
-black / dark_blue / dark_green / dark_aqua / dark_red / dark_purple / gold / gray
-dark_gray / blue / green / aqua / red / light_purple / yellow / white
+### 袭击高亮（1.6 新增）
+- 打袭击时高亮所有袭击敌人（与敲钟标记的敌人一致）
+- `keep` 一波结束后下一波敌人继续高亮
+- `broadcast` 每 10 秒播报剩余敌人与坐标
+- 袭击胜利后自动清除检测与高亮
 
 ```
-/hunt color block #ff8800
-/hunt color glow aqua
-/hunt block minecraft:coal_ore #00ff00
+/hunt glow raid [颜色] [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
 ```
 
-默认颜色：方块浅绿、生物白色。
+### 结构显示（1.5 新增）
+- MiniHUD 风格半透明高亮整个结构（主体与内部区块分别框出）
+- 支持村庄、下界要塞、古城等全部原版结构
 
----
+```
+/hunt structure <结构ID> [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
+```
 
-## Clear 清除
+### 颜色
+- 支持 16 色名与 `#rrggbb` 十六进制
+
+```
+/hunt color block <颜色|#rrggbb>    （方块高亮颜色）
+/hunt color glow <颜色|#rrggbb>     （生物发光颜色）
+```
+
+### 清除
+- 一键清除所有高亮与 keep 进程
 
 ```
 /hunt clear
 ```
 
-清除所有方块高亮、生物发光、结构框和 keep 自动监测进程。退出游戏、切换存档或离开服务器时也会自动清理。
+### 其他
+- 默认搜索半径 = 玩家视野区块（服务器为服务器默认视野）
+- 默认高亮上限 4096，超出时提示
+- 被破坏/消失的方块自动移除高亮
 
 ---
 
-## Versions 版本
+## 🎮 命令
 
-- 英文原版：BlockSearch-版本号-26.2.jar
-- 中文翻译版：BlockSearch-版本号-zh-26.2.jar（指令与提示全部汉化，方块/生物/结构 id 保持英文）
+所有命令以 `/hunt` 开头（客户端指令，无需权限）。
 
-当前版本：1.5.15 (26.2)
+### 方块
+```
+/hunt block <方块ID> [半径] [上限]
+/hunt block <方块ID> [颜色]
+/hunt block <方块ID1> <方块ID2> [颜色1 颜色2]
+/hunt block <方块ID1> <方块ID2> [半径] [上限]
+/hunt block <方块ID> keep [半径] [上限] [颜色]
+/hunt block <方块ID> notkeep
+/hunt hand [半径] [上限]          （手持的方块）
+/hunt hand [颜色]
+/hunt hand keep [半径] [上限] [颜色]
+/hunt hand notkeep
+/hunt crosshair [半径] [上限]      （准星所指的方块）
+/hunt crosshair [颜色]
+/hunt crosshair keep [半径] [上限] [颜色]
+/hunt crosshair notkeep
+```
+
+### 生物发光
+```
+/hunt glow                          （开关）
+/hunt glow all [半径] [上限]
+/hunt glow <生物ID> [半径] [上限] [颜色]
+/hunt glow <生物ID> keep [半径] [上限] [颜色] [broadcast|notbroadcast]
+/hunt glow <生物ID> notkeep
+/hunt glow <生物ID1> and <生物ID2> [颜色1 颜色2] [keep|notkeep] [broadcast|notbroadcast]
+/hunt glow chicken_jockey [keep|notkeep] [broadcast|notbroadcast]
+/hunt glow raid [颜色] [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
+```
+
+### 颜色
+```
+/hunt color block <颜色|#rrggbb>    （方块高亮颜色）
+/hunt color glow <颜色|#rrggbb>     （生物发光颜色）
+```
+
+### 结构
+```
+/hunt structure <结构ID> [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
+```
+
+### 清除
+```
+/hunt clear                          （清除所有高亮与 keep 进程）
+```
+
+### 参数说明
+| 参数 | 说明 |
+|---|---|
+| `<方块ID>` | 方块命名空间 ID，如 `minecraft:diamond_ore` |
+| `<生物ID>` | 生物命名空间 ID，如 `minecraft:creeper` |
+| `<结构ID>` | 结构命名空间 ID，如 `minecraft:village_plains` |
+| `[半径]` | 搜索半径，单位区块，默认 = 玩家视野区块 |
+| `[上限]` | 高亮数量上限，默认 4096 |
+| `[颜色]` | 16 色名（red, blue, green…）或 `#rrggbb` |
+| `keep / notkeep` | 持续追踪 / 只检测当前一批 |
+| `broadcast / notbroadcast` | 每 10 秒播报位置 / 关闭播报 |
+
+可用颜色：`black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green, aqua, red, light_purple, yellow, white`
 
 ---
 
-## License 许可
+## 🚀 安装
 
-MIT License — 详见 [LICENSE](LICENSE)。
+1. 安装对应版本的 **Fabric Loader**（Minecraft 26.2）
+2. 将 `BlockSearch-1.6.15-26.2.jar` 放入 `.minecraft/mods` 文件夹
+3. 启动游戏即可，无需服务端安装
+
+> 结构显示与袭击高亮依赖单机世界数据，单人世界可用；进入他人服务器时这两项功能不可用（其余功能正常）。
+
+---
+
+## 📝 更新日志
+
+### v1.6.15
+- 新增袭击高亮 `/hunt glow raid`
+- 不带 keep 只检测当前一波敌人，带 keep 持续追踪后续波次
+- 袭击胜利自动清除检测与高亮
+- 修复首次使用指令不发光/闪一下就消失的问题
+- 修复第二次使用指令导致崩溃的问题
+- 清理调试代码，保留诊断日志
+
+### v1.5
+- 新增结构显示 `/hunt structure <结构ID>`
+- 新增方块/生物 keep 追踪、播报、颜色自定义、多目标高亮
+
+---
+
+## 📜 许可
+
+仅客户端模组，遵循 MIT 许可证。作者 `_lan_qing_`。
