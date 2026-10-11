@@ -1,4 +1,4 @@
-[GitHub_README.md](https://github.com/user-attachments/files/33282359/GitHub_README.md)
+[GitHub_README（1.6.19）.md](https://github.com/user-attachments/files/33297701/GitHub_README.1.6.19.md)
 # BlockSearch
 
 一个 Minecraft **Fabric 客户端**模组，通过 `/hunt` 指令在游戏中高亮标记方块、生物、结构以及袭击敌人，支持颜色、范围、数量上限与持续追踪（keep）等自定义。
@@ -6,7 +6,7 @@
 - **作者**：_lan_qing_（与 AI 共同完成）
 - **适用版本**：Minecraft 26.2（Fabric）
 - **模组 ID**：blocksearch
-- **当前版本**：1.6.15-26.2
+- **当前版本**：1.6.19-26.2
 - **加载方式**：仅客户端（无需服务端安装，可进服务器游玩）
 
 ---
@@ -17,7 +17,7 @@
 - 按方块 ID、手持物品、准星所指三种方式寻找
 - 支持同时高亮两种方块（可分别指定颜色）
 - 支持自定义颜色、搜索半径（区块）、高亮数量上限
-- `keep` 持续追踪（新出现的方块也会继续高亮）
+- `keep` 持续追踪（新出现的方块也会继续高亮，被破坏的方块高亮自动消失）
 
 ```
 /hunt block <方块ID> [半径] [上限] | [颜色]
@@ -29,9 +29,9 @@
 ```
 
 ### 生物高亮
-- 按生物 ID 寻找，支持同时高亮多种生物（可分别指定颜色）
-- `keep` 跨波持续追踪，`broadcast` 每 10 秒播报剩余生物与坐标
-- **鸡骑士**：可单独高亮鸡骑士及其身上的小僵尸，自动播报位置
+- 按生物 ID 寻找，支持同时高亮多种生物（`and` 连接，可分别指定颜色）
+- `keep` 持续追踪；`broadcast` 新出现的目标生物即时播报位置
+- **鸡骑士**：可单独高亮鸡骑士及其身上的小僵尸，keep 时自动播报位置（不受播报开关影响）
 
 ```
 /hunt glow all [半径] [上限]
@@ -40,17 +40,20 @@
 /hunt glow chicken_jockey [keep|notkeep] [broadcast|notbroadcast]
 ```
 
-### 袭击高亮（1.6 新增）
-- 打袭击时高亮所有袭击敌人（与敲钟标记的敌人一致）
+### 袭击高亮（1.6 新增，单人与服务器均可用）
+- 打袭击时高亮袭击敌人：单人精确匹配袭击成员（与敲钟标记一致），服务器近似匹配周围 Raider 类型敌人
 - `keep` 一波结束后下一波敌人继续高亮
-- `broadcast` 每 10 秒播报剩余敌人与坐标
-- 袭击胜利后自动清除检测与高亮
+- `broadcast` 每 15 秒播报剩余敌人与坐标；下一波敌人出现时立即播报
+- 单人播报附带波数：`第 X/Y 波（还剩 Z 波）`
+- 有袭击之兆（Bad Omen）或袭击进行中时指令生效
+- 走出袭击范围高亮自动暂清，返回范围自动恢复
+- 袭击胜利或失败后自动清除检测与高亮
 
 ```
 /hunt glow raid [颜色] [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
 ```
 
-### 结构显示（1.5 新增）
+### 结构显示（1.5 新增，仅单人可用）
 - MiniHUD 风格半透明高亮整个结构（主体与内部区块分别框出）
 - 支持村庄、下界要塞、古城等全部原版结构
 
@@ -80,83 +83,33 @@
 
 ---
 
-## 🎮 命令
-
-所有命令以 `/hunt` 开头（客户端指令，无需权限）。
-
-### 方块
-```
-/hunt block <方块ID> [半径] [上限]
-/hunt block <方块ID> [颜色]
-/hunt block <方块ID1> <方块ID2> [颜色1 颜色2]
-/hunt block <方块ID1> <方块ID2> [半径] [上限]
-/hunt block <方块ID> keep [半径] [上限] [颜色]
-/hunt block <方块ID> notkeep
-/hunt hand [半径] [上限]          （手持的方块）
-/hunt hand [颜色]
-/hunt hand keep [半径] [上限] [颜色]
-/hunt hand notkeep
-/hunt crosshair [半径] [上限]      （准星所指的方块）
-/hunt crosshair [颜色]
-/hunt crosshair keep [半径] [上限] [颜色]
-/hunt crosshair notkeep
-```
-
-### 生物发光
-```
-/hunt glow                          （开关）
-/hunt glow all [半径] [上限]
-/hunt glow <生物ID> [半径] [上限] [颜色]
-/hunt glow <生物ID> keep [半径] [上限] [颜色] [broadcast|notbroadcast]
-/hunt glow <生物ID> notkeep
-/hunt glow <生物ID1> and <生物ID2> [颜色1 颜色2] [keep|notkeep] [broadcast|notbroadcast]
-/hunt glow chicken_jockey [keep|notkeep] [broadcast|notbroadcast]
-/hunt glow raid [颜色] [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
-```
-
-### 颜色
-```
-/hunt color block <颜色|#rrggbb>    （方块高亮颜色）
-/hunt color glow <颜色|#rrggbb>     （生物发光颜色）
-```
-
-### 结构
-```
-/hunt structure <结构ID> [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
-```
-
-### 清除
-```
-/hunt clear                          （清除所有高亮与 keep 进程）
-```
-
-### 参数说明
-| 参数 | 说明 |
-|---|---|
-| `<方块ID>` | 方块命名空间 ID，如 `minecraft:diamond_ore` |
-| `<生物ID>` | 生物命名空间 ID，如 `minecraft:creeper` |
-| `<结构ID>` | 结构命名空间 ID，如 `minecraft:village_plains` |
-| `[半径]` | 搜索半径，单位区块，默认 = 玩家视野区块 |
-| `[上限]` | 高亮数量上限，默认 4096 |
-| `[颜色]` | 16 色名（red, blue, green…）或 `#rrggbb` |
-| `keep / notkeep` | 持续追踪 / 只检测当前一批 |
-| `broadcast / notbroadcast` | 每 10 秒播报位置 / 关闭播报 |
-
-可用颜色：`black, dark_blue, dark_green, dark_aqua, dark_red, dark_purple, gold, gray, dark_gray, blue, green, aqua, red, light_purple, yellow, white`
-
----
-
 ## 🚀 安装
 
 1. 安装对应版本的 **Fabric Loader**（Minecraft 26.2）
-2. 将 `BlockSearch-1.6.15-26.2.jar` 放入 `.minecraft/mods` 文件夹
+2. 将 `BlockSearch-1.6.19-26.2.jar` 放入 `.minecraft/mods` 文件夹
 3. 启动游戏即可，无需服务端安装
 
-> 结构显示与袭击高亮依赖单机世界数据，单人世界可用；进入他人服务器时这两项功能不可用（其余功能正常）。
+> 结构显示依赖单机世界数据，仅单人世界可用；袭击高亮单人与服务器均可用（服务器为近似检测，其余功能全部正常）。
 
 ---
 
 ## 📝 更新日志
+
+### v1.6.19
+- 袭击失败后自动清除检测（单人立即判定，服务器 20 秒判定）
+
+### v1.6.18
+- 袭击播报间隔调整为 15 秒
+- 有袭击之兆（Bad Omen）时袭击指令生效
+- 走出袭击范围不再关闭检测，返回范围自动恢复高亮
+
+### v1.6.17
+- 修复剩余 1~2 个敌人时进度条改名导致误判袭击结束
+- 单人播报附带波数（第 X/Y 波，还剩 Z 波）
+
+### v1.6.16
+- 袭击高亮支持服务器/多人（客户端检测袭击进度条 + 扫描 Raider 敌人近似高亮）
+- 下一波敌人出现时立即播报
 
 ### v1.6.15
 - 新增袭击高亮 `/hunt glow raid`
