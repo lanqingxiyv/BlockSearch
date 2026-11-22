@@ -1,139 +1,185 @@
-[BlockSearch-GitHub-README.md](https://github.com/user-attachments/files/33473551/BlockSearch-GitHub-README.md.GitHub_._1.7.3.8.md)
+[BlockSearch-GitHub-README.md](https://github.com/user-attachments/files/35225756/BlockSearch-GitHub-README.md)
 # BlockSearch
 
-一个 Minecraft **Fabric 客户端**模组，通过 `/hunt` 指令在游戏中高亮标记方块、生物、结构以及袭击敌人，支持颜色、范围、数量上限与持续追踪（keep）等自定义。
+通过 /hunt 指令在游戏中高亮寻找方块、生物、结构以及袭击敌人，支持颜色、范围、数量上限与持续追踪。
 
-- **作者**：_lan_qing_（与 AI 共同完成）
+- **作者**：&#95;lan&#95;qing&#95;（与 AI 共同完成）
 - **适用版本**：Minecraft 26.2（Fabric）
 - **模组 ID**：blocksearch
-- **当前版本**：1.7.3.8-26.2
+- **当前版本**：1.8.7.1-26.2
 - **加载方式**：仅客户端（无需服务端安装，可进服务器游玩）
 
 ---
 
-## ✨ 功能一览
+## 零级指令：/hunt
 
-### 方块高亮
-- 按方块 ID、手持物品、准星所指三种方式寻找
-- 支持同时高亮两种方块（可分别指定颜色）
-- 支持自定义颜色、搜索半径（区块）、高亮数量上限
-- `keep` 持续追踪（新出现的方块也会继续高亮，被破坏的方块高亮自动消失）
+ /hunt 是根指令，单独输入只提示用法，不做任何事。它是唯一固定的一层：调用时先写它，再写一条**一级指令**（功能 + 目标），后面可以继续嵌套若干**二级指令**（参数）。
 
 ```
-/hunt block <方块ID> [半径] [上限] | [颜色]
-/hunt block <方块ID1> <方块ID2> [颜色1 颜色2]
-/hunt hand [半径] [上限] | [颜色]          （手持的方块）
-/hunt crosshair [半径] [上限] | [颜色]      （准星所指的方块）
-# 以上均可加 keep / notkeep，如：
-/hunt block minecraft:diamond_ore keep
+/hunt
 ```
 
-### 生物高亮
-- 按生物 ID 寻找，支持同时高亮多种生物（`and` 连接，可分别指定颜色）
-- `keep` 持续追踪；`broadcast` 新出现的目标生物即时播报位置
-- **鸡骑士**：可单独高亮鸡骑士及其身上的小僵尸，keep 时自动播报位置（不受播报开关影响）
-
-```
-/hunt glow all [半径] [上限]
-/hunt glow <生物ID> [半径] [上限] [颜色] [keep|notkeep] [broadcast|notbroadcast]
-/hunt glow <生物ID1> and <生物ID2> [颜色1 颜色2] [keep|notkeep] [broadcast|notbroadcast]
-/hunt glow chicken_jockey [keep|notkeep] [broadcast|notbroadcast]
-```
-
-### 袭击高亮（1.6 新增，单人与服务器均可用）
-- 打袭击时高亮袭击敌人：单人精确匹配袭击成员（与敲钟标记一致），服务器近似匹配周围 Raider 类型敌人
-- `keep` 一波结束后下一波敌人继续高亮
-- `broadcast` 每 15 秒播报剩余敌人与坐标；下一波敌人出现时立即播报
-- 单人播报附带波数：`第 X/Y 波（还剩 Z 波）`
-- 有袭击之兆（Bad Omen）或袭击进行中时指令生效
-- 走出袭击范围高亮自动暂清，返回范围自动恢复
-- 袭击胜利或失败后自动清除检测与高亮
-
-```
-/hunt glow raid [颜色] [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
-```
-
-### 结构显示（1.5 新增，1.7 起支持多人服务器）
-- tweakeroo 风格半透明面 + 描边高亮整个结构（外层合并大框 + 内层各区块小框，最多两层）
-- 单人：精确读取世界结构数据
-- 多人服务器：客户端扫描已加载区块，通过方块指纹匹配定位结构（无需服务端安装，后台双线程扫描不卡帧）
-- 支持全部原版结构：村庄、下界要塞、末地城（含末地船、底座）、古城、要塞（含末地传送门）、废弃矿井等
-- 末地传送门、末地船、末地城底座等特殊结构手写指纹精准检测
-
-```
-/hunt structure <结构ID> [半径] [上限] [keep|notkeep] [broadcast|notbroadcast]
-```
-
-### 颜色
-- 支持 16 色名与 `#rrggbb` 十六进制
-
-```
-/hunt color block <颜色|#rrggbb>    （方块高亮颜色）
-/hunt color glow <颜色|#rrggbb>     （生物发光颜色）
-```
-
-### 清除
-- 一键清除所有高亮与 keep 进程
-
-```
-/hunt clear
-```
-
-### 其他
-- 默认搜索半径 = 玩家视野区块（服务器为服务器默认视野）
-- 默认高亮上限 4096，超出时提示
-- 被破坏/消失的方块自动移除高亮
+Tab 补全逐级向下：一级补功能与目标，二级补参数名，之后补颜色与 ID。ID 可写 minecraft:diamond_ore，也可省略命名空间写 diamond_ore。
 
 ---
 
-## 🚀 安装
+## 一级指令
 
-1. 安装对应版本的 **Fabric Loader**（Minecraft 26.2）
-2. 将 `BlockSearch-1.7.3.8-26.2.jar` 放入 `.minecraft/mods` 文件夹
-3. 启动游戏即可，无需服务端安装
+一级指令是“功能 + 目标”的整体，写到目标就算完整，可以不接任何二级指令。每条一级指令能跟的二级指令不同，下面逐条列出。
 
-> 结构显示单人与多人服务器均可用（多人模式为客户端扫描已加载区块 + 方块指纹匹配）；袭击高亮单人与服务器均可用（服务器为近似检测，其余功能全部正常）。
+### 方块高亮：block / hand / crosshair
+
+```
+/hunt block <方块ID>     按方块 ID 找
+/hunt hand               找你手上拿着的方块
+/hunt crosshair          找你准星指着的方块
+```
+
+可用二级指令：and、radius、count、color、once、broadcast。
+
+```
+/hunt block minecraft:diamond_ore radius 16 count 4096 color aqua once
+/hunt block minecraft:diamond_ore and minecraft:emerald_ore color aqua green
+/hunt block minecraft:ancient_debris radius 32 broadcast
+/hunt hand radius 16 color gold
+/hunt crosshair once
+```
+
+### 生物高亮：glow
+
+```
+/hunt glow <生物ID>             按生物 ID 找
+/hunt glow all                  高亮范围内全部生物
+```
+
+all 必须单独使用；chicken_jockey 是新增的可选发光目标。
+
+可用二级指令：and、radius、count、color、once、broadcast。
+
+```
+/hunt glow all radius 8
+/hunt glow minecraft:creeper and minecraft:skeleton color green white broadcast
+/hunt glow chicken_jockey color red broadcast
+```
+
+### 结构显示：structure
+
+```
+/hunt structure <结构ID>
+```
+
+可用二级指令：and、radius、color、once、broadcast。
+
+```
+/hunt structure minecraft:village_plains
+/hunt structure minecraft:fortress and minecraft:bastion_remnant color red blue radius 32
+```
+
+### 袭击高亮：raid
+
+```
+/hunt raid
+```
+
+可用二级指令：color、once、broadcast。
+
+```
+/hunt raid color red broadcast
+/hunt raid once
+```
+
+### 区域高亮：region
+
+```
+/hunt region box <x1> <y1> <z1> [<x2> <y2> <z2>]
+/hunt region sphere <x> <y> <z> [半径]
+```
+
+可用二级指令：只有 color，写在坐标之后。坐标支持 ~ 相对；方体单点即 1×1×1，球形不给半径即单点；边长上限 512、球半径上限 256、单次最多渲染 8192 个方块。
+
+```
+/hunt region box ~ ~ ~ ~10 ~5 ~10 color red
+/hunt region sphere 0 70 0 32 color #ff8800
+```
+
+### 清除：clear
+
+```
+/hunt clear              清除全部
+/hunt clear block        只清方块高亮
+/hunt clear glow         只清生物发光
+/hunt clear structure    只清结构框
+/hunt clear raid         只清袭击高亮
+/hunt clear region       只清区域框
+```
+
+不接任何二级指令。
 
 ---
 
-## 📝 更新日志
+## 二级指令说明
 
-### v1.7.3.8
-- **结构显示支持多人服务器**：`/hunt structure` 在服务器上通过客户端扫描已加载区块 + 方块指纹匹配定位结构，无需服务端安装；后台双线程扫描，秒级出结果不卡帧
-- **渲染升级为 tweakeroo 风格**：半透明面 + 描边，正常深度测试；结构框两层显示（外层合并大框 + 内层各区块小框）
-- **手写指纹精准检测**：末地传送门（纯 12 块框架环，兼容原版/自建/装满眼睛）、末地船（龙首锚点）、末地城底座（末地烛柱阵）、下界要塞、要塞、废弃矿井
-- 同结构多次匹配自动去重（解决旋转镜像叠框问题）
+| 二级指令 | 作用 |
+|---|---|
+| and <ID> | 追加一个目标，最多 16 个 |
+| radius N | 搜索半径（区块），1–256，默认取当前有效渲染距离 |
+| count N | 高亮上限，1–10000，默认 4096 |
+| color C [C2 …] | 颜色，16 色名或 #rrggbb，多目标按顺序配色 |
+| once | 只显示本次结果，不每秒刷新 |
+| broadcast | 首次立即播报，之后每 15 秒播报最近 5 个坐标 |
 
-### v1.6.19
-- 袭击失败后自动清除检测（单人立即判定，服务器 20 秒判定）
-
-### v1.6.18
-- 袭击播报间隔调整为 15 秒
-- 有袭击之兆（Bad Omen）时袭击指令生效
-- 走出袭击范围不再关闭检测，返回范围自动恢复高亮
-
-### v1.6.17
-- 修复剩余 1~2 个敌人时进度条改名导致误判袭击结束
-- 单人播报附带波数（第 X/Y 波，还剩 Z 波）
-
-### v1.6.16
-- 袭击高亮支持服务器/多人（客户端检测袭击进度条 + 扫描 Raider 敌人近似高亮）
-- 下一波敌人出现时立即播报
-
-### v1.6.15
-- 新增袭击高亮 `/hunt glow raid`
-- 不带 keep 只检测当前一波敌人，带 keep 持续追踪后续波次
-- 袭击胜利自动清除检测与高亮
-- 修复首次使用指令不发光/闪一下就消失的问题
-- 修复第二次使用指令导致崩溃的问题
-- 清理调试代码，保留诊断日志
-
-### v1.5
-- 新增结构显示 `/hunt structure <结构ID>`
-- 新增方块/生物 keep 追踪、播报、颜色自定义、多目标高亮
+**嵌套规则**：写在目标之后、顺序随意、可任意组合；radius / count / once / broadcast 不能重复写，and 最多连写 16 次，color 可连写按目标顺序配色。默认每秒刷新一次，方块被破坏或走出范围后高亮自动消失，加 once 则定格。
 
 ---
 
-## 📜 许可
+## 颜色
 
-仅客户端模组，遵循 MIT 许可证。作者 `_lan_qing_`。
+16 色名：black dark_blue dark_green dark_aqua dark_red dark_purple gold gray dark_gray blue green aqua red light_purple yellow white；也支持 #rrggbb。
+
+默认方块浅绿、生物白色、区域绿色。退出游戏、切换存档或离开服务器时自动清理。
+
+---
+
+## 🔗 联动
+
+投影打印机（投影打印机五改）是作者基于 Litematica Printer 改写的 Fabric 客户端模组，载入投影后自动帮你摆方块、挖掘和去皮，按区域排队执行。它可以拿本模组的高亮结果当作业范围：在打印机的去皮等模块里把选区类型切成「BlockSearch 高亮」，就会直接处理你搜出来的那些方块，不用手动圈选区。两个模组都是纯客户端，放进同一个 .minecraft/mods 即可联动。
+
+---
+
+## 发光与渲染逻辑
+
+方块高亮：
+
+- 64 格内逐块画线框，64 格外按 2×2 取样；单区块最多 512 个、单目标 4096 个，超过 count 只留最近的
+- 线框是双层：实色层 + 55% 透明的加粗层；512 格外不再绘制
+- 128 格内实色满亮，128 到 512 格透明度线性降到 0.80；线宽 96 格内为 2.5，之后随距离加粗到 4.2
+- 被六个同种方块包住的内部块：64 格内不画，之外按坐标奇偶隔一画，总量超过 6000 停止；标记总数超过 6000 时，128 格外只保留虚线圈
+
+生物高亮：
+
+- 用原版发光标记逐实体上色，不是画框
+- 半径按区块的方形范围筛选，最近优先，超过 count 截断
+- 离开范围不会立刻熄灭，直到实体死亡、所在区块卸载或 /hunt clear
+- 鸡骑士判定为“骑着幼年僵尸的鸡”，鸡和身上的小僵尸一起上色
+
+结构显示：
+
+- tweakeroo 风格半透明面 + 描边，外层合并大框 + 内层各区块小框（最多两层），只在当前维度渲染
+
+区域高亮：
+
+- 区域内逐块画线框，单次最多 8192 个方块，超出只显示前 8192 个
+
+## 📦 安装
+
+1. 安装 Fabric Loader（Minecraft 26.2）
+2. 下载 jar 放入 .minecraft/mods
+3. 启动游戏，无需服务端安装
+
+> 结构显示单人与多人服务器均可用（多人模式为客户端扫描已加载区块 + 方块指纹匹配）；袭击高亮单人与服务器均可用（服务器为近似检测）。其余功能全部正常。
+
+## 📄 许可
+
+MIT License，作者 &#95;lan&#95;qing&#95;。
+
+> （注：部分内容由豆包 AI 生成）
