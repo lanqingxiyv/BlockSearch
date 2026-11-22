@@ -181,5 +181,3 @@ all 必须单独使用；chicken_jockey 是新增的可选发光目标。
 ## 📄 许可
 
 MIT License，作者 &#95;lan&#95;qing&#95;。
-
-> （注：部分内容由豆包 AI 生成）
